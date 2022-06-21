@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import LinkServices from "../services/link.services";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { async } from "@firebase/util";
 
 export default function LinkList() {
   const [links, setLinks] = useState([]);
@@ -24,50 +22,59 @@ export default function LinkList() {
   }, []);
 
   return (
-    <div className="bg-white p-7 border rounded-lg shadow-lg">
+    <div className="bg-white p-7 border rounded-lg shadow-lg flex flex-col justify-center">
       <div className="flex justify-end">
         <button
-          className="bg-blue-200 p-2 hover:text-white border rounded-md text font-semibold"
           onClick={() => {
             getLinks();
           }}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="button"
         >
           Refresh
         </button>
       </div>
-      <table className="table-auto border-separate [border-spacing:0.75rem]">
-        <thead>
-          <tr>
-            <th>Campaign</th>
-            <th>Page</th>
-            <th>Short Link</th>
-          </tr>
-        </thead>
-        <tbody>
-          {links.map((doc, index) => {
-            return (
-              <tr key={doc.id}>
-                <td className="flex justify-center">{doc.campaign}</td>
-                <td>{doc.page}</td>
-                <td>
-                  <a href={doc.link} className="text-blue-600">
-                    {doc.link}
-                  </a>
-                </td>
-                <td>
-                  <FontAwesomeIcon
-                    onClick={() => {
-                      deleteHandler(doc.id);
-                    }}
-                    icon={faTrashCan}
-                    className="hover:text-red-500"
-                  ></FontAwesomeIcon>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className="border rounded-lg inline-block mt-3 overflow-auto">
+        <table className="table-auto border rounded-lg overflow-hidden">
+          <thead className="border rounded-lg">
+            <tr className="bg-gray-200 border rounded">
+              <th className="p-2">#</th>
+              <th className="p-2">Campaign</th>
+              <th className="p-2">Page</th>
+              <th className="p-2">Short Link</th>
+              <th className="p-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {links.map((doc, index) => {
+              return (
+                <tr
+                  key={doc.id}
+                  className="border border-separate border-gray-300 "
+                >
+                  <td className="p-3 ">{index + 1}</td>
+                  <td className="p-3 text-center">{doc.campaign}</td>
+                  <td className="p-3">{doc.page}</td>
+                  <td className="p-3">
+                    <a href={doc.link} className="text-blue-600">
+                      {doc.link}
+                    </a>
+                  </td>
+                  <td className="p-3">
+                    <FontAwesomeIcon
+                      onClick={() => {
+                        deleteHandler(doc.id);
+                      }}
+                      icon={faTrashCan}
+                      className="hover:text-red-500"
+                    ></FontAwesomeIcon>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

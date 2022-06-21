@@ -8,6 +8,8 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  orderBy,
 } from "firebase/firestore";
 
 const linkCollection = collection(db, "dynamic-link-data");
@@ -28,7 +30,8 @@ class LinkServices {
   };
 
   getAllLinks = () => {
-    return getDocs(linkCollection);
+    const queryData = query(linkCollection, orderBy("timestamp", "asc"));
+    return getDocs(queryData);
   };
 
   getLink = (id) => {

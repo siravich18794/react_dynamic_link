@@ -1,25 +1,24 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { async } from "@firebase/util";
 import LinkServices from "../services/link.services";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-regular-svg-icons";
-import LinkList from "./LinkList";
+import { serverTimestamp, timestamp } from "firebase/firestore";
 
 export default function Form() {
   const [page, setPage] = useState("");
   const [link, setLink] = useState("");
   const [campaign, setCampaign] = useState("");
 
-  // Function for getting short dynamic link
-  const addLinkToDB = async () => {
-    console.log(`Link : ${link}`);
+  const addLinkToDB = async (link2) => {
     const newLink = {
-      campaign,
-      page,
-      link,
+      campaign: campaign,
+      page: page,
+      link: link2,
+      timestamp: serverTimestamp(),
     };
+
+    console.log(newLink);
+    console.log(serverTimestamp());
 
     try {
       await LinkServices.addLink(newLink);
@@ -28,6 +27,7 @@ export default function Form() {
     }
   };
 
+  // Function for getting short dynamic link
   const getShortLink = async (page) => {
     try {
       const response = await axios.post(
@@ -49,7 +49,7 @@ export default function Form() {
 
       setLink(response.data.shortLink);
       console.log("Do addLinktoDB");
-      addLinkToDB();
+      addLinkToDB(response.data.shortLink);
     } catch (error) {
       if (error.response) {
         console.log(error.response.data);
@@ -60,12 +60,13 @@ export default function Form() {
   };
 
   return (
-    <div className="w-full max-w-md max-h-full">
+    <div className="w-full max-w-md items-center">
       <form className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4">
         <div className="flex justify-center">
           <label
             className="block text-gray-700 text-2xl text font-bold mb-10"
-            for="username"
+            //htmlFor="username"
+            // for="username"
           >
             Create Dynamic Link
           </label>
@@ -74,13 +75,13 @@ export default function Form() {
         <div className="mb-6">
           <label
             className="block text-gray-700 text-sm font-bold mb-4"
-            for="username"
+            //for="username"
           >
             Enter your campaign
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
+            id="campaign"
             type="text"
             placeholder="Campaign"
             onChange={(e) => setCampaign(e.target.value)}
@@ -90,15 +91,15 @@ export default function Form() {
         <div className="mb-6">
           <label
             className="block text-gray-700 text-sm font-bold mb-4"
-            for="username"
+            //for="username"
           >
-            Enter page
+            Enter the page
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
+            id="page"
             type="text"
-            placeholder="Page"
+            placeholder="men-page / women-page / children-page"
             onChange={(e) => setPage(e.target.value)}
           />
         </div>
